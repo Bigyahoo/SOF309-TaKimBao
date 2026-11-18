@@ -1,4 +1,4 @@
-package com.vstay.servlet;
+package com.poly.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -1,7 +1,7 @@
-package com.vstay.servlet;
+package com.poly.servlet;
 
-import com.vstay.dao.ContactDAO;
-import com.vstay.model.Contact;
+import com.poly.dao.ContactDAO;
+import com.poly.model.Contact;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

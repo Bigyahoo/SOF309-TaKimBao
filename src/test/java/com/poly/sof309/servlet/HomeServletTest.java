@@ -1,7 +1,7 @@
-package com.vstay.servlet;
+package com.poly.servlet;
 
-import com.vstay.dao.HotelDAO;
-import com.vstay.model.Hotel;
+import com.poly.dao.HotelDAO;
+import com.poly.model.Hotel;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

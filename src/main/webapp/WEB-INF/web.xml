@@ -9,7 +9,7 @@
     <!-- Encoding Filter -->
     <filter>
         <filter-name>EncodingFilter</filter-name>
-        <filter-class>com.vstay.filter.EncodingFilter</filter-class>
+        <filter-class>com.poly.filter.EncodingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>EncodingFilter</filter-name>
@@ -19,7 +19,7 @@
     <!-- Auth Filter -->
     <filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>com.vstay.filter.AuthFilter</filter-class>
+        <filter-class>com.poly.filter.AuthFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
@@ -33,7 +33,7 @@
     <!-- Admin Auth Filter -->
     <filter>
         <filter-name>AdminFilter</filter-name>
-        <filter-class>com.vstay.filter.AdminFilter</filter-class>
+        <filter-class>com.poly.filter.AdminFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>

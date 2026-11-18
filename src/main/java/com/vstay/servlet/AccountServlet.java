@@ -1,11 +1,11 @@
-package com.vstay.servlet;
+package com.poly.servlet;
 
-import com.vstay.dao.BookingDAO;
-import com.vstay.dao.FavoriteDAO;
-import com.vstay.dao.UserDAO;
-import com.vstay.model.Booking;
-import com.vstay.model.Favorite;
-import com.vstay.model.User;
+import com.poly.dao.BookingDAO;
+import com.poly.dao.FavoriteDAO;
+import com.poly.dao.UserDAO;
+import com.poly.model.Booking;
+import com.poly.model.Favorite;
+import com.poly.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

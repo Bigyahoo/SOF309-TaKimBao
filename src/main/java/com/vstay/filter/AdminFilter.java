@@ -1,6 +1,6 @@
-package com.vstay.filter;
+package com.poly.filter;
 
-import com.vstay.model.User;
+import com.poly.model.User;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

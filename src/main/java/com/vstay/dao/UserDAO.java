@@ -1,7 +1,7 @@
-package com.vstay.dao;
+package com.poly.dao;
 
-import com.vstay.model.User;
-import com.vstay.util.HibernateUtil;
+import com.poly.model.User;
+import com.poly.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

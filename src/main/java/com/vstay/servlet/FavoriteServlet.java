@@ -1,11 +1,11 @@
-package com.vstay.servlet;
+package com.poly.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vstay.dao.FavoriteDAO;
-import com.vstay.dao.HotelDAO;
-import com.vstay.model.Favorite;
-import com.vstay.model.Hotel;
-import com.vstay.model.User;
+import com.poly.dao.FavoriteDAO;
+import com.poly.dao.HotelDAO;
+import com.poly.model.Favorite;
+import com.poly.model.Hotel;
+import com.poly.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
