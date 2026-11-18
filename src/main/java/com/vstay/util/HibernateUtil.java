@@ -1,4 +1,4 @@
-package com.poly.util;
+package com.vstay.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

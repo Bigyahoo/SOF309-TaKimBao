@@ -1,4 +1,4 @@
-package com.poly.util;
+package com.vstay.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

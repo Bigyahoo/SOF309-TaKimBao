@@ -1,13 +1,13 @@
-package com.poly.servlet;
+package com.vstay.servlet;
 
-import com.poly.dao.HotelDAO;
-import com.poly.dao.ReviewDAO;
-import com.poly.dao.UserDAO;
-import com.poly.model.Hotel;
-import com.poly.model.Review;
-import com.poly.model.Room;
-import com.poly.model.User;
-import com.poly.util.PasswordUtil;
+import com.vstay.dao.HotelDAO;
+import com.vstay.dao.ReviewDAO;
+import com.vstay.dao.UserDAO;
+import com.vstay.model.Hotel;
+import com.vstay.model.Review;
+import com.vstay.model.Room;
+import com.vstay.model.User;
+import com.vstay.util.PasswordUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

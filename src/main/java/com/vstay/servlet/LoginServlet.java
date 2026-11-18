@@ -1,8 +1,8 @@
-package com.poly.servlet;
+package com.vstay.servlet;
 
-import com.poly.dao.UserDAO;
-import com.poly.model.User;
-import com.poly.util.PasswordUtil;
+import com.vstay.dao.UserDAO;
+import com.vstay.model.User;
+import com.vstay.util.PasswordUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

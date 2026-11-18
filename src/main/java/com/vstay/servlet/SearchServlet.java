@@ -1,7 +1,7 @@
-package com.poly.servlet;
+package com.vstay.servlet;
 
-import com.poly.dao.HotelDAO;
-import com.poly.model.Hotel;
+import com.vstay.dao.HotelDAO;
+import com.vstay.model.Hotel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

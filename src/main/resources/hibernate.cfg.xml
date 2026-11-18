@@ -27,12 +27,12 @@
         <property name="hibernate.current_session_context_class">thread</property>
 
         <!-- Entity Mappings -->
-        <mapping class="com.poly.model.Hotel"/>
-        <mapping class="com.poly.model.User"/>
-        <mapping class="com.poly.model.Booking"/>
-        <mapping class="com.poly.model.Contact"/>
-        <mapping class="com.poly.model.Room"/>
-        <mapping class="com.poly.model.Review"/>
-        <mapping class="com.poly.model.Favorite"/>
+        <mapping class="com.vstay.model.Hotel"/>
+        <mapping class="com.vstay.model.User"/>
+        <mapping class="com.vstay.model.Booking"/>
+        <mapping class="com.vstay.model.Contact"/>
+        <mapping class="com.vstay.model.Room"/>
+        <mapping class="com.vstay.model.Review"/>
+        <mapping class="com.vstay.model.Favorite"/>
     </session-factory>
 </hibernate-configuration>

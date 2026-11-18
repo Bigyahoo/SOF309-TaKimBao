@@ -1,4 +1,4 @@
-package com.poly.model;
+package com.vstay.model;
 
 import jakarta.persistence.*;
 import lombok.*;

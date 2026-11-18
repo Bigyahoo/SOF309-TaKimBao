@@ -1,7 +1,7 @@
-package com.poly.servlet;
+package com.vstay.servlet;
 
-import com.poly.dao.UserDAO;
-import com.poly.model.User;
+import com.vstay.dao.UserDAO;
+import com.vstay.model.User;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
