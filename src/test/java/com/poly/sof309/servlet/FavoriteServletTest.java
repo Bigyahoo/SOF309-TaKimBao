@@ -96,7 +96,7 @@ class FavoriteServletTest {
     @ParameterizedTest(name = "[{index}] hotelId=''{0}'' → 400 Bad Request")
     @CsvSource({
         "''",
-        "   "
+        "'   '"  // Bao bọc bởi nháy đơn để bảo toàn khoảng trắng trong CSV
     })
     @DisplayName("doPost() — blank hotelId returns HTTP 400")
     void doPost_blankHotelId_returns400(String hotelId) throws Exception {

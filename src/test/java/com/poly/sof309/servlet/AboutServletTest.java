@@ -158,7 +158,6 @@ class AboutServletTest {
         when(request.getParameter("topic")).thenReturn(null);
         when(request.getParameter("message")).thenReturn("Test");
         doThrow(new RuntimeException("DB write failure")).when(contactDAO).save(any());
-        when(request.getRequestDispatcher("/WEB-INF/views/about.jsp")).thenReturn(dispatcher);
 
         // AboutServlet does not catch DAO exceptions — the exception propagates as ServletException
         // We document this as expected behaviour

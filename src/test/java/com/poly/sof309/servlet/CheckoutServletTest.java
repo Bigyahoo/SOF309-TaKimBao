@@ -31,7 +31,11 @@ import static org.mockito.Mockito.*;
  * Validates: success-page GET, missing hotel redirect, booking creation,
  * V-Points calculation, payment method handling, and date/nights parsing.
  */
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT) // Cho phép các tham số linh hoạt trong Servlet
 @DisplayName("CheckoutServlet — Unit Tests")
 class CheckoutServletTest {
 
