@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  # =============================================================
-  # JOB 1: Chạy Unit Test nhanh (Fast Feedback: JUnit 5 + Mockito)
-  # =============================================================
+  # =========================================================================
+  # JOB 1: Unit Tests (JUnit 5 + Mockito) - Nhanh, không phụ thuộc DB/Server
+  # =========================================================================
   unit-test:
     name: Unit Tests (JUnit 5 + Mockito)
     runs-on: ubuntu-latest
@@ -27,9 +27,9 @@ jobs:
         cache: maven
 
     - name: Run Unit Tests
-      run: mvn test -Dtest="*Test"
+      run: mvn clean test -Dtest="*Test,!*UITest,!*SeleniumTest,!*IT" -Dsurefire.failIfNoTests=false
 
-    - name: Upload Surefire Reports
+    - name: Upload Unit Test Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
@@ -37,23 +37,17 @@ jobs:
         path: target/surefire-reports/
         if-no-files-found: ignore
 
-  # =============================================================
-  # JOB 2: Chạy Automation UI Test (Selenium + SQL Server + Tomcat)
-  # =============================================================
+  # =========================================================================
+  # JOB 2: Integration & UI Automation Tests (SQL Server + Tomcat 10 + Chrome)
+  # =========================================================================
   ui-automation-test:
     name: Selenium UI Automation Test
     runs-on: ubuntu-latest
-    needs: unit-test # Chỉ chạy khi Unit Test đã pass
+    needs: unit-test
 
-    # Khởi tạo SQL Server làm service container
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          ACCEPT_EULA: "Y"
-          MSSQL_SA_PASSWORD: "1kO8<6G_ZbZ@G@{ZP%)"
-        ports:
-          - 1433:1433
+    env:
+      DB_PASSWORD: "YourStrong@Password123"
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -65,42 +59,95 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    # Cài đặt trình duyệt Google Chrome mới nhất trên runner
     - name: Setup Google Chrome
       uses: browser-actions/setup-chrome@v1
       with:
         chrome-version: stable
 
-    # Build gói ứng dụng WAR
-    - name: Package WAR
+    - name: Start SQL Server 2022 & Create VstayDB
+      run: |
+        docker run -d --name sqlserver \
+          -e "ACCEPT_EULA=Y" \
+          -e "MSSQL_SA_PASSWORD=${{ env.DB_PASSWORD }}" \
+          -p 1433:1433 \
+          mcr.microsoft.com/mssql/server:2022-latest
+
+        echo "Waiting for SQL Server 2022 to accept SQL queries..."
+        for i in $(seq 1 30); do
+          if docker exec sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${{ env.DB_PASSWORD }}" -C -Q "SELECT 1" > /dev/null 2>&1; then
+            echo "SQL Server is ready!"
+            break
+          fi
+          if [ "$i" -eq 30 ]; then
+            echo "SQL Server failed to start in time!"
+            docker logs sqlserver
+            exit 1
+          fi
+          sleep 2
+        done
+
+        echo "Creating database VstayDB if not exists..."
+        docker exec sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${{ env.DB_PASSWORD }}" -C -Q "IF DB_ID('VstayDB') IS NULL CREATE DATABASE VstayDB;"
+
+    - name: Configure Hibernate for CI Environment
+      run: |
+        if [ -f src/main/resources/hibernate.cfg.xml ]; then
+          sed -i 's|<property name="hibernate.connection.url">.*</property>|<property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=VstayDB;encrypt=true;trustServerCertificate=true</property>|' src/main/resources/hibernate.cfg.xml
+          sed -i 's|<property name="hibernate.connection.username">.*</property>|<property name="hibernate.connection.username">sa</property>|' src/main/resources/hibernate.cfg.xml
+          sed -i "s|<property name=\"hibernate.connection.password\">.*</property>|<property name=\"hibernate.connection.password\">${{ env.DB_PASSWORD }}</property>|" src/main/resources/hibernate.cfg.xml
+        fi
+
+    - name: Package WAR Application
       run: mvn clean package -DskipTests
 
-    # Tải và khởi động Apache Tomcat 10 chạy ngầm ứng dụng
-    - name: Start Tomcat Server
+    - name: Start Tomcat 10 Container & Deploy WAR
       run: |
-        wget https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.20/bin/apache-tomcat-10.1.20.tar.gz
-        tar -xzf apache-tomcat-10.1.20.tar.gz
-        mv apache-tomcat-10.1.20 tomcat
-        cp target/*.war tomcat/webapps/vstay.war
-        chmod +x tomcat/bin/*.sh
-        ./tomcat/bin/startup.sh
-        
-        # Đợi ứng dụng khởi động sẵn sàng
-        echo "Waiting for Vstay web application to start on port 8080..."
-        timeout 60 bash -c 'until curl -s http://localhost:8080/vstay/ > /dev/null; do sleep 2; done'
-        echo "Application is UP and running!"
+        WAR_FILE=$(ls target/*.war | head -n 1)
+        if [ -z "$WAR_FILE" ]; then
+          echo "ERROR: No .war file found in target/"
+          ls -la target/
+          exit 1
+        fi
 
-    # Khởi tạo dữ liệu mẫu (Seeding)
-    - name: Seed Database
+        echo "Deploying $WAR_FILE to Tomcat 10..."
+        cp "$WAR_FILE" /tmp/vstay.war
+
+        docker run -d --name tomcat-app \
+          --network host \
+          -v /tmp/vstay.war:/usr/local/tomcat/webapps/vstay.war \
+          tomcat:10.1-jdk17
+
+        echo "Waiting for Vstay application to deploy on http://localhost:8080/vstay/..."
+        for i in $(seq 1 30); do
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/vstay/ || true)
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "302" ]; then
+            echo "Vstay is UP (HTTP $STATUS)!"
+            break
+          fi
+          if [ "$i" -eq 30 ]; then
+            echo "Tomcat / Vstay failed to start in time (Last HTTP status: $STATUS)!"
+            docker logs tomcat-app
+            exit 1
+          fi
+          sleep 2
+        done
+
+    - name: Seed Sample Data
       run: |
-        curl -s http://localhost:8080/vstay/seed || true
+        curl -f -s http://localhost:8080/vstay/seed > /dev/null
+        echo "Database seeded successfully via /seed!"
 
-    # Thực thi các bài kiểm thử tự động Selenium
     - name: Run Selenium Automation Tests
-      run: |
-        mvn test -Dtest="*IT,*SeleniumTest,*UITest"
+      run: mvn test -Dtest="*IT,*SeleniumTest,*UITest" -Dsurefire.failIfNoTests=false
 
-    # Đính kèm ảnh chụp màn hình nếu Selenium test bị fail (Artifact debug)
+    - name: Print Container Logs on Failure
+      if: failure()
+      run: |
+        echo "=== Tomcat Logs ==="
+        docker logs tomcat-app || true
+        echo "=== SQL Server Logs ==="
+        docker logs --tail 50 sqlserver || true
+
     - name: Upload Failure Screenshots
       if: failure()
       uses: actions/upload-artifact@v4
