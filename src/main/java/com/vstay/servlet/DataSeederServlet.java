@@ -137,6 +137,7 @@ public class DataSeederServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Lỗi nạp dữ liệu mẫu: " + e.getMessage());
         }
     }

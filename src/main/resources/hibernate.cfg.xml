@@ -23,6 +23,9 @@
         <!-- Schema Generation -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
+        <!-- Use NVARCHAR for String columns (required for Vietnamese Unicode on SQL Server) -->
+        <property name="hibernate.use_nationalized_character_data">true</property>
+
         <!-- Current Session Context -->
         <property name="hibernate.current_session_context_class">thread</property>
 
