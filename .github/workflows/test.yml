@@ -27,7 +27,7 @@ jobs:
         cache: maven
 
     - name: Run Unit Tests
-      run: mvn clean test -Dtest="*Test,!*UITest,!*SeleniumTest,!*IT" -Dsurefire.failIfNoTests=false
+      run: mvn clean test -Dtest="*Test,!*UITest,!*SeleniumTest,!*IT" -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false
 
     - name: Upload Unit Test Reports
       if: always()
@@ -138,7 +138,7 @@ jobs:
         echo "Database seeded successfully via /seed!"
 
     - name: Run Selenium Automation Tests
-      run: mvn test -Dtest="*IT,*SeleniumTest,*UITest" -Dsurefire.failIfNoTests=false
+      run: mvn test -Dtest="*IT,*SeleniumTest,*UITest" -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false
 
     - name: Print Container Logs on Failure
       if: failure()
