@@ -10,9 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "SearchServlet", urlPatterns = {"/search"})
 public class SearchServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(SearchServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
 
@@ -79,7 +83,7 @@ public class SearchServlet extends HttpServlet {
 
             request.getRequestDispatcher("/WEB-INF/views/search.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to execute search", e);
             request.setAttribute("errorMessage", "Lỗi tìm kiếm: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/search.jsp").forward(request, response);
         }

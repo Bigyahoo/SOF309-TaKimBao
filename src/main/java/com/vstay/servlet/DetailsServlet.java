@@ -16,9 +16,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "DetailsServlet", urlPatterns = {"/details"})
 public class DetailsServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(DetailsServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
     private final ReviewDAO reviewDAO = new ReviewDAO();
@@ -61,7 +65,7 @@ public class DetailsServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/search");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load hotel details", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

@@ -10,9 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "HomeServlet", urlPatterns = {"", "/home", "/index"})
 public class HomeServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(HomeServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
 
@@ -30,7 +34,7 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("cities", cities);
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load homepage data", e);
             request.setAttribute("errorMessage", e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         }

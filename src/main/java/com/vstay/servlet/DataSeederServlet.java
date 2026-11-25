@@ -17,9 +17,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "DataSeederServlet", urlPatterns = {"/seed"})
 public class DataSeederServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(DataSeederServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
     private final UserDAO userDAO = new UserDAO();
@@ -108,7 +112,7 @@ public class DataSeederServlet extends HttpServlet {
                     <title>Khởi tạo dữ liệu Vstay thành công</title>
                     <style>
                         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7fb; color: #1e293b; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-                        .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); max-width: 500px; width: 90%; text-align: center; }
+                        .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); max-width: 500px; width: 90%%; text-align: center; }
                         h1 { color: #0062E0; margin-bottom: 8px; font-size: 26px; }
                         p { color: #64748b; font-size: 15px; margin: 12px 0 24px; }
                         .stats { background: #f0f7ff; border: 1px solid #cce3ff; border-radius: 10px; padding: 15px; margin-bottom: 24px; text-align: left; }
@@ -136,7 +140,7 @@ public class DataSeederServlet extends HttpServlet {
             response.getWriter().write(html);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to seed sample data", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Lỗi nạp dữ liệu mẫu: " + e.getMessage());
         }

@@ -11,9 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
 public class RegisterServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(RegisterServlet.class.getName());
 
     private final UserDAO userDAO = new UserDAO();
 
@@ -83,7 +87,7 @@ public class RegisterServlet extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to register user", e);
             request.setAttribute("registerError", "Lỗi khi đăng ký tài khoản: " + e.getMessage());
             request.setAttribute("tab", "register");
             request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);

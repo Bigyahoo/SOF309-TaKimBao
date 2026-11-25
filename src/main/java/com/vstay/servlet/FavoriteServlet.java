@@ -16,9 +16,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "FavoriteServlet", urlPatterns = {"/favorite"})
 public class FavoriteServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(FavoriteServlet.class.getName());
 
     private final FavoriteDAO favoriteDAO = new FavoriteDAO();
     private final HotelDAO hotelDAO = new HotelDAO();
@@ -75,7 +79,7 @@ public class FavoriteServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to toggle favorite", e);
             jsonResponse.put("status", "error");
             jsonResponse.put("message", e.getMessage());
         }

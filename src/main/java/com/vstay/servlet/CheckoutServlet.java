@@ -16,9 +16,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "CheckoutServlet", urlPatterns = {"/checkout"})
 public class CheckoutServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(CheckoutServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
     private final BookingDAO bookingDAO = new BookingDAO();
@@ -59,8 +63,10 @@ public class CheckoutServlet extends HttpServlet {
             request.setAttribute("checkOut", request.getParameter("checkOut"));
 
             request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/search");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load checkout page", e);
             response.sendRedirect(request.getContextPath() + "/search");
         }
     }
@@ -154,7 +160,7 @@ public class CheckoutServlet extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/checkout?success=true&code=" + bookingCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to process booking checkout", e);
             request.setAttribute("error", "Lỗi xử lý đặt phòng: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
         }

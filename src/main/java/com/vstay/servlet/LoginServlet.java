@@ -11,9 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
 
     private final UserDAO userDAO = new UserDAO();
 
@@ -61,7 +65,7 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to process login", e);
             request.setAttribute("error", "Đã xảy ra lỗi khi đăng nhập: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }

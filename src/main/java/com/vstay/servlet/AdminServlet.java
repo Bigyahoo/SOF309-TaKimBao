@@ -13,9 +13,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "AdminServlet", urlPatterns = {"/admin"})
 public class AdminServlet extends HttpServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(AdminServlet.class.getName());
 
     private final HotelDAO hotelDAO = new HotelDAO();
     private final BookingDAO bookingDAO = new BookingDAO();
@@ -67,7 +71,7 @@ public class AdminServlet extends HttpServlet {
                 try {
                     hotelDAO.delete(Long.parseLong(idStr.trim()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.SEVERE, "Failed to delete hotel id=" + idStr, e);
                 }
             }
         } else if ("create".equalsIgnoreCase(action) || "update".equalsIgnoreCase(action)) {
@@ -141,7 +145,7 @@ public class AdminServlet extends HttpServlet {
                     hotelDAO.save(hotel);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, "Failed to save hotel", e);
             }
         }
 
