@@ -134,8 +134,16 @@ jobs:
 
     - name: Seed Sample Data
       run: |
-        curl -f -s http://localhost:8080/vstay/seed > /dev/null
-        echo "Database seeded successfully via /seed!"
+        echo "Seeding database (force=true to bypass idempotency check)..."
+        SEED_STATUS=$(curl -s -o /tmp/seed_response.txt -w '%{http_code}' "http://localhost:8080/vstay/seed?force=true")
+        echo "Seed HTTP status: $SEED_STATUS"
+        cat /tmp/seed_response.txt || true
+        if [ "$SEED_STATUS" != "200" ]; then
+          echo "ERROR: Seed endpoint returned HTTP $SEED_STATUS"
+          docker logs tomcat-app || true
+          exit 1
+        fi
+        echo "Database seeded successfully!"
 
     - name: Run Selenium Automation Tests
       run: mvn test -Dtest="*IT,*SeleniumTest,*UITest" -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false

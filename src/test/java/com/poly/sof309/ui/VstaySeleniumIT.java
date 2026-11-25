@@ -71,11 +71,24 @@ class VstaySeleniumIT {
         locationInput.sendKeys("Đà Nẵng");
         driver.findElement(By.id("btnSubmitHeroSearch")).click();
 
+        // Wait for the search results page to load
         wait.until(ExpectedConditions.urlContains("/search"));
+
+        // Verify the URL carries the location query param (proves form submission worked)
+        assertTrue(driver.getCurrentUrl().contains("location="),
+                "URL must contain 'location=' parameter after submitting search");
+
+        // Verify the results count element is present and renders a valid non-negative integer
         WebElement countEl = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id("totalHotelsCount")));
-        long count = Long.parseLong(countEl.getText().trim());
-        assertTrue(count > 0, "Expected seeded hotels in Đà Nẵng");
+        String rawCount = countEl.getText().trim();
+        assertNotNull(rawCount, "#totalHotelsCount element must be present on search page");
+        assertFalse(rawCount.isBlank(), "#totalHotelsCount element must not be blank");
+
+        long count = Long.parseLong(rawCount);
+        assertTrue(count > 0,
+                "Expected seeded hotels in Đà Nẵng (got " + count + "). " +
+                "Check that /seed?force=true ran successfully before this test.");
     }
 
     @Test
